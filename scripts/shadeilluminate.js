@@ -85,15 +85,17 @@ class GlApp {
         
         // draw all models --> note you need to properly select shader here
         for (let i = 0; i < this.scene.models.length; i ++) {
-            this.gl.useProgram(this.shader['emissive'].program);
+            this.gl.useProgram(this.shader['emissive'].program); // this is where we select shader type
 
+            // This is how we're transforming the model
+                // Could be a translate or rotate or scale for each model
             glMatrix.mat4.identity(this.model_matrix);
             glMatrix.mat4.translate(this.model_matrix, this.model_matrix, this.scene.models[i].center);
             glMatrix.mat4.scale(this.model_matrix, this.model_matrix, this.scene.models[i].size);
 
-            this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.models[i].material.color);
-            this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.projection, false, this.projection_matrix);
-            this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);
+            this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.models[i].material.color); // uploading vector3 to graphics card
+            this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.projection, false, this.projection_matrix); // vector4 matrix for view, model and projection
+            this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.model, false, this.model_matrix);
 
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);
@@ -102,6 +104,7 @@ class GlApp {
         }
 
         // draw all light sources
+        // WE DON"T HAVE TO DO ANYTHING HERE
         for (let i = 0; i < this.scene.light.point_lights.length; i ++) {
             this.gl.useProgram(this.shader['emissive'].program);
 
