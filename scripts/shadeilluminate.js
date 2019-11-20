@@ -7,7 +7,7 @@ class GlApp {
         if (!this.gl) {
             alert('Unable to initialize WebGL 2. Your browser may not support it.');
         }
-
+        //his
         this.scene = scene;
         this.algorithm = 'gouraud'
         this.shader = {gouraud_color: null, gouraud_texture: null,
