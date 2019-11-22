@@ -10,7 +10,9 @@ class GlApp {
         //his  
         //hers
         this.scene = scene;
+        //user selected shaded algo
         this.algorithm = 'gouraud'
+        //list of shaders this depends on the algorithm
         this.shader = {gouraud_color: null, gouraud_texture: null,
                        phong_color: null,   phong_texture: null};
         this.vertex_position_attrib = 0;
@@ -20,7 +22,7 @@ class GlApp {
         this.projection_matrix = glMatrix.mat4.create();
         this.view_matrix = glMatrix.mat4.create();
         this.model_matrix = glMatrix.mat4.create();
-
+        //one vertex array for each, has positions, normals, and texcoord
         this.vertex_array = {plane: null, cube: null, sphere: null};
 
         let gouraud_color_vs = this.GetFile('shaders/gouraud_color.vert');
@@ -85,6 +87,8 @@ class GlApp {
         
         // draw all models --> note you need to properly select shader here
         for (let i = 0; i < this.scene.models.length; i ++) {
+            //create a string with a combination of the algorithm and models shader type, for example gouraud color or text
+            // this will replace all emissive
             this.gl.useProgram(this.shader['emissive'].program); // this is where we select shader type
 
             // This is how we're transforming the model
@@ -92,7 +96,8 @@ class GlApp {
             glMatrix.mat4.identity(this.model_matrix);
             glMatrix.mat4.translate(this.model_matrix, this.model_matrix, this.scene.models[i].center);
             glMatrix.mat4.scale(this.model_matrix, this.model_matrix, this.scene.models[i].size);
-
+            // alot more of this as we need more info about lights and all like changing the proj_matrix and uniform material. Dont
+            //change these but we need to add. 
             this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.models[i].material.color); // uploading vector3 to graphics card
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.projection, false, this.projection_matrix); // vector4 matrix for view, model and projection
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
@@ -183,6 +188,8 @@ class GlApp {
 
         this.LinkShaderProgram(program);
 
+
+        //we already used some of these but we have to ust them all like shininess projection and all that up there 
         let light_ambient_uniform = this.gl.getUniformLocation(program, 'light_ambient');
 		let light_pos_uniform = this.gl.getUniformLocation(program, 'light_position');
         let light_col_uniform = this.gl.getUniformLocation(program, 'light_color');
@@ -224,6 +231,7 @@ class GlApp {
 
         this.LinkShaderProgram(program);
 
+        //we already used some of these so we gotta use all of them 
 		let light_ambient_uniform = this.gl.getUniformLocation(program, 'light_ambient');
         let light_pos_uniform = this.gl.getUniformLocation(program, 'light_position');
         let light_col_uniform = this.gl.getUniformLocation(program, 'light_color');
