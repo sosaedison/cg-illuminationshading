@@ -11,6 +11,7 @@ class GlApp {
         //hers
         this.scene = scene;
         //user selected shaded algo
+        //from broswer drop down menu
         this.algorithm = 'gouraud'
         //list of shaders this depends on the algorithm
         this.shader = {gouraud_color: null, gouraud_texture: null,
@@ -19,9 +20,9 @@ class GlApp {
         this.vertex_normal_attrib = 1;
         this.vertex_texcoord_attrib = 2;
 
-        this.projection_matrix = glMatrix.mat4.create();
-        this.view_matrix = glMatrix.mat4.create();
-        this.model_matrix = glMatrix.mat4.create();
+        this.projection_matrix = glMatrix.mat4.create(); // project to 2D cause we can't draw 3D
+        this.view_matrix = glMatrix.mat4.create(); // defines where the camera is and transforms the camera to that position
+        this.model_matrix = glMatrix.mat4.create(); // transforms model to the correct locaition in the scene
         //one vertex array for each, has positions, normals, and texcoord
         this.vertex_array = {plane: null, cube: null, sphere: null};
 
@@ -44,10 +45,12 @@ class GlApp {
     }
 
     InitializeGlApp() {
+        //Draw scene to the canvas
         this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
         this.gl.clearColor(0.8, 0.8, 0.8, 1.0);
-        this.gl.enable(this.gl.DEPTH_TEST);
+        this.gl.enable(this.gl.DEPTH_TEST); // Drawing with the z buffer so things layer properly
 
+        //Creates vertex array 
         this.vertex_array.plane = CreatePlaneVao(this);
         this.vertex_array.cube = CreateCubeVao(this);
         this.vertex_array.sphere = CreateSphereVao(this);
@@ -60,7 +63,7 @@ class GlApp {
         let cam_target = glMatrix.vec3.create();
         let cam_up = this.scene.camera.up;
         glMatrix.vec3.add(cam_target, cam_pos, this.scene.camera.direction);
-        glMatrix.mat4.lookAt(this.view_matrix, cam_pos, cam_target, cam_up);
+        glMatrix.mat4.lookAt(this.view_matrix, cam_pos, cam_target, cam_up); // Setting view matrix -- sets vrp and vpn
 
         this.Render();
     }
@@ -83,7 +86,7 @@ class GlApp {
     }
 
     Render() {
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT); // clear everything
         
         // draw all models --> note you need to properly select shader here
         for (let i = 0; i < this.scene.models.length; i ++) {
@@ -106,7 +109,7 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.model, false, this.model_matrix);
 
-            this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);
+            this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]); // bind the one we're about to draw
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
             this.gl.bindVertexArray(null);
         }
@@ -121,7 +124,7 @@ class GlApp {
             glMatrix.mat4.scale(this.model_matrix, this.model_matrix, glMatrix.vec3.fromValues(0.1, 0.1, 0.1));
 
 
-            this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.light.point_lights[i].color);
+            this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.light.point_lights[i].color); 
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.projection, false, this.projection_matrix);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.model, false, this.model_matrix);
@@ -193,6 +196,7 @@ class GlApp {
 
 
         //we already used some of these but we have to ust them all like shininess projection and all that up there 
+        //These are references to the things that are running on the graphics card
         let light_ambient_uniform = this.gl.getUniformLocation(program, 'light_ambient');
 		let light_pos_uniform = this.gl.getUniformLocation(program, 'light_position');
         let light_col_uniform = this.gl.getUniformLocation(program, 'light_color');
