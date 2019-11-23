@@ -88,14 +88,17 @@ class GlApp {
         // draw all models --> note you need to properly select shader here
         for (let i = 0; i < this.scene.models.length; i ++) {
             //create a string with a combination of the algorithm and models shader type, for example gouraud color or text
-            // this will replace all emissive
+            // this will replace all emissive with scene.models.shader
+            console.log(this.scene.models[0].shader);
             this.gl.useProgram(this.shader['emissive'].program); // this is where we select shader type
+            
 
             // This is how we're transforming the model
                 // Could be a translate or rotate or scale for each model
             glMatrix.mat4.identity(this.model_matrix);
             glMatrix.mat4.translate(this.model_matrix, this.model_matrix, this.scene.models[i].center);
             glMatrix.mat4.scale(this.model_matrix, this.model_matrix, this.scene.models[i].size);
+            
             // alot more of this as we need more info about lights and all like changing the proj_matrix and uniform material. Dont
             //change these but we need to add. 
             this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.models[i].material.color); // uploading vector3 to graphics card
