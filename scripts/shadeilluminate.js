@@ -92,9 +92,8 @@ class GlApp {
         for (let i = 0; i < this.scene.models.length; i ++) {
             //create a string with a combination of the algorithm and models shader type, for example gouraud color or text
             // this will replace all emissive with scene.models.shader
-            console.log(this.scene.models[0].shader);
-            this.gl.useProgram(this.shader['emissive'].program); // this is where we select shader type
-            //test
+            var shaderType = this.algorithm + '_' + this.scene.models[0].shader;
+            this.gl.useProgram(this.shader[shaderType].program); // this is where we select shader type
 
             // This is how we're transforming the model
                 // Could be a translate or rotate or scale for each model
@@ -104,10 +103,20 @@ class GlApp {
             
             // alot more of this as we need more info about lights and all like changing the proj_matrix and uniform material. Dont
             //change these but we need to add. 
-            this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.models[i].material.color); // uploading vector3 to graphics card
-            this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.projection, false, this.projection_matrix); // vector4 matrix for view, model and projection
-            this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
-            this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.model, false, this.model_matrix);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.material, this.scene.models[i].material.color); // uploading vector3 to graphics card
+            this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.projection, false, this.projection_matrix); // vector4 matrix for view, model and projection
+            this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
+            this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.model, false, this.model_matrix);
+            //this.gl.uniform3fv(this.shader[shaderType].uniform.light_ambient, this.something);
+            //this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, false, this.something); NOT SURE IF VEX OR MATRIX
+            //this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.something);
+            //this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.something);
+            //this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.something);
+            //this.gl.uniform3fv(this.shader[shaderType].uniform.material_spec, this.something);
+            //this.gl.uniform3fv(this.shader[shaderType].uniform.shininess, this.something);
+            
+            console.log(this.shader[shaderType].uniform.model);
+
 
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]); // bind the one we're about to draw
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
