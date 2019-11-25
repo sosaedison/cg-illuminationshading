@@ -108,8 +108,8 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.model, false, this.model_matrix);
             //this.scene..... from html
-            this.gl.uniform3fv(this.shader[shaderType].uniform.light_ambient, this.something);
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, false, this.something); NOT SURE IF VEX OR MATRIX
+            this.gl.uniform3fv(this.shader[shaderType].uniform.light_ambient, this.scene.light.ambient);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, false, this.scene.light.point_lights[0].position);
             //this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.something);
             //this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.something);
             //this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.something);
