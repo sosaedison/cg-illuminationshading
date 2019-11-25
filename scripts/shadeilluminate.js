@@ -92,7 +92,7 @@ class GlApp {
         for (let i = 0; i < this.scene.models.length; i ++) {
             //create a string with a combination of the algorithm and models shader type, for example gouraud color or text
             // this will replace all emissive with scene.models.shader
-            var shaderType = this.algorithm + '_' + this.scene.models[0].shader;
+            var shaderType = this.algorithm + '_' + this.scene.models[i].shader;
             this.gl.useProgram(this.shader[shaderType].program); // this is where we select shader type
 
             // This is how we're transforming the model
@@ -112,7 +112,9 @@ class GlApp {
             this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.scene.light.point_lights[0].color);
             this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.scene.camera.position);
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.scene.models[i].material.color);
+            
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_spec, this.scene.models[i].material.specular);
+            //uniform1f
             this.shader[shaderType].uniform.shininess = this.scene.models[i].material.shininess;
 
             /** CONSOLE LOG TESTS */
@@ -125,6 +127,7 @@ class GlApp {
         }
 
         // draw all light sources
+        //we dont change emissive here!!
         for (let i = 0; i < this.scene.light.point_lights.length; i ++) {
             this.gl.useProgram(this.shader['emissive'].program);
 
