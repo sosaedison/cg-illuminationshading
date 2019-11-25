@@ -94,7 +94,7 @@ class GlApp {
             // this will replace all emissive with scene.models.shader
             console.log(this.scene.models[0].shader);
             this.gl.useProgram(this.shader['emissive'].program); // this is where we select shader type
-            
+            //test
 
             // This is how we're transforming the model
                 // Could be a translate or rotate or scale for each model
