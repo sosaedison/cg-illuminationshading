@@ -19,5 +19,13 @@ out vec3 diffuse;
 out vec3 specular;
 
 void main() {
+    // we have to do the main calculations here
+    
+    // light_ambient = vec3(0.2, 0.2, 0.2);
+
+    // vec3 lightDir = normalize(light_position - vertex_position);
+    
+
+
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
 }

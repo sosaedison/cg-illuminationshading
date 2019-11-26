@@ -92,7 +92,7 @@ class GlApp {
         for (let i = 0; i < this.scene.models.length; i ++) {
             //create a string with a combination of the algorithm and models shader type, for example gouraud color or text
             // this will replace all emissive with scene.models.shader
-            var shaderType = this.algorithm + '_' + this.scene.models[0].shader;
+            var shaderType = this.algorithm + '_' + this.scene.models[i].shader;
             this.gl.useProgram(this.shader[shaderType].program); // this is where we select shader type
 
             // This is how we're transforming the model
@@ -107,25 +107,22 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.projection, false, this.projection_matrix); // vector4 matrix for view, model and projection
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.model, false, this.model_matrix);
-            //this.scene..... from html
             this.gl.uniform3fv(this.shader[shaderType].uniform.light_ambient, this.scene.light.ambient);
-            this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, false, this.scene.light.point_lights[0].position);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, this.scene.light.point_lights[0].position);
             this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.scene.light.point_lights[0].color);
             this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.scene.camera.position);
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.scene.models[i].material.color);
+            
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_spec, this.scene.models[i].material.specular);
-            this.gl.uniform3fv(this.shader[shaderType].uniform.shininess, this.scene.models[i].material.shininess);
-
-            /** CONSOLE LOG TESTS */
-            console.log(this.scene.models[i].material.shininess);
-
-
+            //uniform1f
+            this.gl.uniform1f(this.shader[shaderType].uniform.shininess,this.scene.models[i].material.shininess);
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]); // bind the one we're about to draw
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
             this.gl.bindVertexArray(null);
         }
 
         // draw all light sources
+        //we dont change emissive here!!
         for (let i = 0; i < this.scene.light.point_lights.length; i ++) {
             this.gl.useProgram(this.shader['emissive'].program);
 
