@@ -108,13 +108,13 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.model, false, this.model_matrix);
             //this.scene..... from html
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.light_ambient, this.scene.light.ambient);
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, false, this.scene.light.point_lights[0].position);
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.scene.light.point_lights[0].color);
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.scene.camera.position);
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.scene.models[i].material.color);
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.material_spec, this.scene.models[i].material.specular);
-            //this.gl.uniform3fv(this.shader[shaderType].uniform.shininess, this.scene.models[i].material.shininess);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.light_ambient, this.scene.light.ambient);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, false, this.scene.light.point_lights[0].position);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.scene.light.point_lights[0].color);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.scene.camera.position);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.scene.models[i].material.color);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.material_spec, this.scene.models[i].material.specular);
+            this.gl.uniform3fv(this.shader[shaderType].uniform.shininess, this.scene.models[i].material.shininess);
 
             /** CONSOLE LOG TESTS */
             console.log(this.scene.models[i].material.shininess);
