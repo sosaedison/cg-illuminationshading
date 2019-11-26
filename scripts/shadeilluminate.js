@@ -115,7 +115,8 @@ class GlApp {
             
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_spec, this.scene.models[i].material.specular);
             //uniform1f
-            this.gl.uniform1f(shader[shaderType].uniform.shininess,this.scene.models[i].material.shininess);
+            //this.gl.uniform1f(this.shader[shaderType].uniform.shininess,this.scene.models[i].material.shininess);
+            console.log(this.scene.models[i].material.shininess)
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]); // bind the one we're about to draw
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
             this.gl.bindVertexArray(null);
