@@ -20,11 +20,10 @@ out vec3 specular;
 
 void main() {
     // we have to do the main calculations here
-    
-    // light_ambient = vec3(0.2, 0.2, 0.2);
-
-    // vec3 lightDir = normalize(light_position - vertex_position);
-    
+    // I = (I_a * K_a) + (I_p * K_d) (N_norm * L_norm) + (I_p * K_s) (R_norm * V_norm)
+    //    [   ambient  ] [         diffuse          ]   [            specular          ]
+    ambient = light_ambient;
+    specular = light_position;
 
 
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
