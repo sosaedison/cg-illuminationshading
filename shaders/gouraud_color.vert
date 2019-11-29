@@ -20,7 +20,7 @@ out vec3 specular;
 
 void main() {
     // we have to do the main calculations here
-    // I = (I_a * K_a) + (I_p * K_d) (N_norm * L_norm) + (I_p * K_s) (R_norm * V_norm)
+    // I = (I_a * K_a) + (I_p * K_d) (N_norm * L_norm) + (I_p * K_s) (R_norm * V_norm)^n
     //    [   ambient  ] [         diffuse          ]   [            specular          ]
     
     //vector from fragment location
@@ -41,8 +41,8 @@ void main() {
     vec3 direction_to_light = light_position - vertex_normal;
     diffuse = (light_position *  dot( surface_normal, direction_to_light )); // I think this is I_p without k_d
 
-    vec3 norm_relfected_light_direction = 2 * ( ( dot(surface_normal, -light_position) ) * ( surface_normal ) - ( -light_position ) );
+    int norm_relfected_light_direction = 2 multiply(( (dot(surface_normal, -light_position) ) * ( surface_normal ) - ( -light_position ) ));
     vec3 normalized_view_direction = normalize(camera_position);
-    specular = light_position * pow( dot(norm_relfected_light_direction, normalized_view_direction), material_shininess); // I think this is I_p without K_s
+    specular = light_position * pow(dot(norm_relfected_light_direction, normalized_view_direction), material_shininess); // I think this is I_p without K_s
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
 }
