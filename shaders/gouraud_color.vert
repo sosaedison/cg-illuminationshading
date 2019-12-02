@@ -28,8 +28,6 @@ void main() {
     // to_light = glMatrix.vec3.normalize(to_light);
     // vec3 V_normal = glMatrix.vec3.normalize(vertex_normal);
 
-
-    
     // vec3 to_camera = -1.0 * camera_position
     // vec3 reflection = 2.0 * glMatrix.vec3.dot(vertex_normal, to_light) * vertex_normal - to_light;
     // vec3 R_norm = glMatrix.vec3.normalize(reflection);
