@@ -32,15 +32,19 @@ void main() {
     // vec3 reflection = 2.0 * glMatrix.vec3.dot(vertex_normal, to_light) * vertex_normal - to_light;
     // vec3 R_norm = glMatrix.vec3.normalize(reflection);
     
-    float ambient_strength = 0.1;
-    ambient = light_ambient * ambient_strength; // I think this is is I_a
-    
-    vec3 surface_normal = normalize(vertex_normal);
-    vec3 direction_to_light = light_position - vertex_normal;
-    diffuse = (light_position *  dot( surface_normal, direction_to_light )); // I think this is I_p without k_d
+    //float ambient_strength = 0.1;
+    ambient = light_ambient;// * ambient_strength; // I think this is is I_a
+    vec4 pos = model_matrix * vec4(vertex_position, 1.0);
+    //we have to do the same thing to
+    mat3 norm_matrix = inverse(transpose(mat3(model_matrix)));
+    vec3 norm = normalize(norm_matrix * vertex_normal);
 
-    vec3 norm_relfected_light_direction = 2.0 * ((dot(surface_normal, -light_position))* (( surface_normal ) - ( -light_position )));
-    vec3 normalized_view_direction = normalize(camera_position);
-    specular = light_position * pow(dot(norm_relfected_light_direction, normalized_view_direction), material_shininess); // I think this is I_p without K_s
+    //vec3 surface_normal = normalize(vertex_normal - pos1.xyz);
+    vec3 direction_to_light = normalize(light_position - pos.xyz);
+    diffuse = (light_color *  dot( norm, direction_to_light )); // I think this is I_p without k_d
+
+    vec3 norm_relfected_light_direction = 2.0 * ((dot(norm, -light_position)) * (( norm + light_position )));
+    vec3 normalized_view_direction = normalize(camera_position - pos.xyz);
+    specular = light_color * pow(dot(norm_relfected_light_direction, normalized_view_direction), material_shininess); // I think this is I_p without K_s
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
 }
