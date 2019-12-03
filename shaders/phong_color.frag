@@ -16,6 +16,9 @@ uniform float material_shininess; // n
 out vec4 FragColor;
 
 void main() {
+
+    vec3 ambient = light_ambient * material_color;
+    vec3 diffuse = light_color;
     
     FragColor = vec4(material_color, 1.0);
 }
