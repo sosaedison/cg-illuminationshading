@@ -20,7 +20,7 @@ void main() {
     vec3 L = normalize(light_position - frag_pos);
     vec3 R = (2.0 * (clamp(dot(N, L), 0.0, 1.0) * N) - L);
     vec3 V = normalize(camera_position - frag_pos);
-    vec3 ambient = light_ambient;
+    vec3 ambient = light_ambient * material_color;
 
     vec3 diiffuse = light_color * material_color * clamp(dot(N , L), 0.0,1.0);
 
