@@ -40,10 +40,10 @@ void main() {
 
     //vec3 surface_normal = normalize(vertex_normal - pos1.xyz);
     vec3 direction_to_light = normalize(light_position - pos.xyz);
-    diffuse = (light_color *  dot( norm, direction_to_light )); // I think this is I_p without k_d
+    diffuse = (light_color *  clamp(dot( norm, direction_to_light ), 0.0, 1.0));
 
-    vec3 norm_relfected_light_direction = clamp( 2.0 * (dot(norm, direction_to_light) * ( norm - direction_to_light )), 0.0 , 1.0 );
+    vec3 norm_relfected_light_direction = normalize(clamp( 2.0 * dot(norm, direction_to_light) * norm - direction_to_light , 0.0 , 1.0 ));
     vec3 normalized_view_direction = normalize(camera_position - pos.xyz);
-    specular = light_color * pow(dot(norm_relfected_light_direction, normalized_view_direction), material_shininess); // I think this is I_p without K_s
+    specular = light_color * pow(clamp(dot(norm_relfected_light_direction, normalized_view_direction), 0.0, 1.0), material_shininess); // I think this is I_p without K_s
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
 }
