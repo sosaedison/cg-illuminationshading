@@ -21,11 +21,17 @@ out vec4 FragColor;
 void main() {
     vec3 final_mat_color = texture(image, frag_texcoord).rgb * material_color;
     vec3 coord = texture(image, frag_texcoord); 
-    vec3 
-    vec3 N = normalize()
-    vec3 L = normalize(light_position - coord);
-    vec3 ambient = light_ambient * final_mat_color;
-    vec3 diffuse = light_color * final_mat_color
 
-    FragColor = vec4(material_color, 1.0) * texture(image, frag_texcoord);
+    //not sure if N L R V are right not sure what to put to normalize
+    vec3 N = normalize(coord);
+
+    //not sure if this is right
+    vec3 L = normalize(light_position - coord);
+    vec3 R = (2.0 * (clamp(dot(N, L), 0.0, 1.0) * N) - L);
+    vec3 V = normalize(camera_position - coord);
+    vec3 ambient = light_ambient * final_mat_color;
+    vec3 diffuse = light_color * final_mat_color * clamp(dot(N , L), 0.0,1.0);
+    vec3 specular  = light_color * material_specular * (pow(clamp(dot(R, V), 0.0, 1.0), material_shininess));
+
+    FragColor = vec4(ambient + diffuse + specular, 1.0) * texture(image, frag_texcoord);
 }
