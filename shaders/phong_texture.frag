@@ -31,5 +31,5 @@ void main() {
     vec3 diffuse = light_color * final_mat_color * clamp(dot(N , L), 0.0,1.0);
     vec3 specular  = light_color * material_specular * (pow(clamp(dot(R, V), 0.0, 1.0), material_shininess));
 
-    FragColor = vec4(ambient + diffuse + specular, 1.0) * texture(image, frag_texcoord);
+    FragColor = vec4(material_color, 1.0) * texture(image, frag_texcoord);
 }
