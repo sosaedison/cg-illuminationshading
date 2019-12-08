@@ -55,6 +55,8 @@ class GlApp {
         this.vertex_array.cube = CreateCubeVao(this);
         this.vertex_array.sphere = CreateSphereVao(this);
 
+        this.InitializeTexture('/images/Checkered.jpg')
+
         let fov = 45.0 * (Math.PI / 180.0);
         let aspect = this.canvas.width / this.canvas.height;
         glMatrix.mat4.perspective(this.projection_matrix, fov, aspect, 1.0, 50.0);
@@ -72,6 +74,7 @@ class GlApp {
           // create a texture, and upload a temporary 1px white RGBA array [255,255,255,255]
         let texture = this.gl.createTexture();
 
+        
         // load the actual image
         let image = new Image();
         image.crossOrigin = 'anonymous';
@@ -84,12 +87,22 @@ class GlApp {
     }
 
     UpdateTexture(texture, image_element) {
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.volume_texture);
-
-        this.gl.texImage3D(this.gl.TEXTURE_3D, 0, this.gl.R8, 256, 256, 256, 0, this.gl.RED, this.gl.UNSIGNED_BYTE, image_element);
+        this.gl.texImage3D(this.gl.TEXTURE_2D, 0, this.gl.R8, 1, 1, 1, 0, this.gl.RED, this.gl.UNSIGNED_BYTE, new Uint8Array([0]));
 
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.R8, 256, 256, 256, 0, this.gl.RED, this.gl.UNSIGNED_BYTE, image_element);
+
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        
     }
 
     Render() {
