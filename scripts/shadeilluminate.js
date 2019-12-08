@@ -85,7 +85,11 @@ class GlApp {
 
     UpdateTexture(texture, image_element) {
 
-        //gluniform1i(index in texture array)
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.volume_texture);
+
+        this.gl.texImage3D(this.gl.TEXTURE_3D, 0, this.gl.R8, 256, 256, 256, 0, this.gl.RED, this.gl.UNSIGNED_BYTE, image_element);
+
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
     }
 
     Render() {
