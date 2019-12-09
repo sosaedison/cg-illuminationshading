@@ -292,6 +292,7 @@ class GlApp {
             light_pos_uniform.push(this.gl.getUniformLocation(program, 'light_position['+j+']'));
             light_col_uniform.push(this.gl.getUniformLocation(program, 'light_color['+j+']'));
         }
+        let num_lights = this.gl.getUniformLocation(program, 'num_lights');
 		let light_ambient_uniform = this.gl.getUniformLocation(program, 'light_ambient');
         let camera_pos_uniform = this.gl.getUniformLocation(program, 'camera_position');
         let material_col_uniform = this.gl.getUniformLocation(program, 'material_color');
@@ -317,7 +318,8 @@ class GlApp {
                 shininess: shininess_uniform,
                 projection: projection_uniform,
                 view: view_uniform,
-                model: model_uniform
+                model: model_uniform,
+                num_lights: num_lights
             }
         };
     }

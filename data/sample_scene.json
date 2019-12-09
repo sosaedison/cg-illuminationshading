@@ -37,7 +37,7 @@
         }
     ],
     "light": {
-        "ambient": [1, 1, 1],
+        "ambient": [0.1, 0.1, 0.1],
         "point_lights": [
             {
                 "position": [1.5, 3.0, 1.5],
