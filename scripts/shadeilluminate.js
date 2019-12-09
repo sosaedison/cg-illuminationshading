@@ -129,8 +129,12 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.view, false, this.view_matrix);  // (shader handle, transpose? 16 values for 4x4 matrix) -> this goes to the shader
             this.gl.uniformMatrix4fv(this.shader[shaderType].uniform.model, false, this.model_matrix);
             this.gl.uniform3fv(this.shader[shaderType].uniform.light_ambient, this.scene.light.ambient);
-            this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos, this.scene.light.point_lights[0].position);
-            this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.scene.light.point_lights[0].color);
+            
+            for(let j = 0; j < this.scene.light.point_lights.length; j++) {
+                this.gl.uniform3fv(this.shader[shaderType].uniform.light_pos[j], this.scene.light.point_lights[j].position);
+                this.gl.uniform3fv(this.shader[shaderType].uniform.light_col[j],this.scene.light.point_lights[j].color);
+            }
+            this.gl.uniform1i(this.shader[shaderType].uniform.num_lights,this.scene.light.point_lights.length );
             this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.scene.camera.position);
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.scene.models[i].material.color);
 
@@ -233,8 +237,15 @@ class GlApp {
         //we already used some of these but we have to ust them all like shininess projection and all that up there 
         //These are references to the things that are running on the graphics card
         let light_ambient_uniform = this.gl.getUniformLocation(program, 'light_ambient');
-		let light_pos_uniform = this.gl.getUniformLocation(program, 'light_position');
-        let light_col_uniform = this.gl.getUniformLocation(program, 'light_color');
+		// let light_pos_uniform = this.gl.getUniformLocation(program, 'light_position');
+        // let light_col_uniform = this.gl.getUniformLocation(program, 'light_color');
+        let light_pos_uniform = [];
+        let light_col_uniform = [];
+        for(let j = 0; j < this.scene.light.point_lights.length; j++) {
+            light_pos_uniform.push(this.gl.getUniformLocation(program, 'light_position['+j+']'));
+            light_col_uniform.push(this.gl.getUniformLocation(program, 'light_color['+j+']'));
+        }
+        let num_lights = this.gl.getUniformLocation(program, 'num_lights');
         let camera_pos_uniform = this.gl.getUniformLocation(program, 'camera_position');
         let material_col_uniform = this.gl.getUniformLocation(program, 'material_color');
         let material_spec_uniform = this.gl.getUniformLocation(program, 'material_specular');
@@ -255,7 +266,8 @@ class GlApp {
                 shininess: shininess_uniform,
                 projection: projection_uniform,
                 view: view_uniform,
-                model: model_uniform
+                model: model_uniform,
+                num_lights: num_lights
             }
         };
     }
@@ -274,9 +286,13 @@ class GlApp {
         this.LinkShaderProgram(program);
 
         //we already used some of these so we gotta use all of them 
+        let light_pos_uniform = [];
+        let light_col_uniform = [];
+        for(let j = 0; j < this.scene.light.point_lights.length; j++) {
+            light_pos_uniform.push(this.gl.getUniformLocation(program, 'light_position['+j+']'));
+            light_col_uniform.push(this.gl.getUniformLocation(program, 'light_color['+j+']'));
+        }
 		let light_ambient_uniform = this.gl.getUniformLocation(program, 'light_ambient');
-        let light_pos_uniform = this.gl.getUniformLocation(program, 'light_position');
-        let light_col_uniform = this.gl.getUniformLocation(program, 'light_color');
         let camera_pos_uniform = this.gl.getUniformLocation(program, 'camera_position');
         let material_col_uniform = this.gl.getUniformLocation(program, 'material_color');
         let material_spec_uniform = this.gl.getUniformLocation(program, 'material_specular');
