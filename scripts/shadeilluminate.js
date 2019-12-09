@@ -55,8 +55,6 @@ class GlApp {
         this.vertex_array.cube = CreateCubeVao(this);
         this.vertex_array.sphere = CreateSphereVao(this);
 
-        this.InitializeTexture('/images/Checkered.jpg')
-
         let fov = 45.0 * (Math.PI / 180.0);
         let aspect = this.canvas.width / this.canvas.height;
         glMatrix.mat4.perspective(this.projection_matrix, fov, aspect, 1.0, 50.0);
@@ -72,9 +70,20 @@ class GlApp {
 
     InitializeTexture(image_url) {
           // create a texture, and upload a temporary 1px white RGBA array [255,255,255,255]
+          
         let texture = this.gl.createTexture();
+        //what future texture is going to affect
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+        //Magnify
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        //opposite of mag
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
 
-        
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA
+            , 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array ([255, 255, 255, 255]));
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
         // load the actual image
         let image = new Image();
         image.crossOrigin = 'anonymous';
@@ -87,22 +96,14 @@ class GlApp {
     }
 
     UpdateTexture(texture, image_element) {
+
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 
-        this.gl.texImage3D(this.gl.TEXTURE_2D, 0, this.gl.R8, 1, 1, 1, 0, this.gl.RED, this.gl.UNSIGNED_BYTE, new Uint8Array([0]));
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image_element);
+
 
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.R8, 256, 256, 256, 0, this.gl.RED, this.gl.UNSIGNED_BYTE, image_element);
-
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-        
+        this.Render();
     }
 
     Render() {
@@ -132,7 +133,14 @@ class GlApp {
             this.gl.uniform3fv(this.shader[shaderType].uniform.light_col,this.scene.light.point_lights[0].color);
             this.gl.uniform3fv(this.shader[shaderType].uniform.camera_pos, this.scene.camera.position);
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_col, this.scene.models[i].material.color);
-            
+
+            if(this.scene.models[i].shader == "texture"){
+                this.gl.activeTexture(this.gl.TEXTURE0);
+                this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.models[i].texture.id);
+                this.gl.uniform1i(this.shader[shaderType].uniform.image, 0);
+                this.gl.uniform2fv(this.shader[shaderType].uniform.tex_scale, this.scene.models[i].texture.scale);
+            }
+
             this.gl.uniform3fv(this.shader[shaderType].uniform.material_spec, this.scene.models[i].material.specular);
             //uniform1f
             this.gl.uniform1f(this.shader[shaderType].uniform.shininess,this.scene.models[i].material.shininess);

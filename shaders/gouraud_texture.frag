@@ -18,4 +18,5 @@ void main() {
     
     vec3 hi = ( ambient * final_mat_color ) + ( diffuse * final_mat_color ) + ( specular * material_specular );
     FragColor = vec4(hi, 1.0);
+    
 }
